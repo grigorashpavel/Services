@@ -8,6 +8,8 @@ import ru.pasha.plugins.*
 fun main(args: Array<String>) = EngineMain.main(args)
 
 fun Application.module() {
+    configureKoin()
+
     configureSerialization()
 
     configureHTTP()
@@ -18,5 +20,4 @@ fun Application.module() {
     configureSwagger()
 
     configureMonitoring()
-    configureLogs()
 }

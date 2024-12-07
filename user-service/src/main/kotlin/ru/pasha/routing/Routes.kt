@@ -4,27 +4,15 @@ import io.ktor.http.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import ru.pasha.data.mappers.toDto
-import ru.pasha.data.repositories.UserRepositoryImpl
-import ru.pasha.database.DatabaseService
 import ru.pasha.domain.commands.Commands
 import ru.pasha.domain.services.UserService
-import ru.pasha.routing.dto.UserDto
 
 
-fun Route.configureUserRoutes() {
-    getUsersRoute()
+fun Route.configureUserRoutes(userService: UserService) {
+    getUsersRoute(userService)
 }
 
-val fakeRepo = UserRepositoryImpl(DatabaseService())
-
-private val userService = object : UserService {
-    override suspend fun getUsers(command: Commands.GetUsers): Result<List<UserDto>> = runCatching {
-        fakeRepo.getUsers().map { it.toDto() }
-    }
-}
-
-private fun Route.getUsersRoute() {
+private fun Route.getUsersRoute(userService: UserService) {
     get<Users> {
         val command = Commands.GetUsers
         userService.getUsers(command)
