@@ -12,4 +12,8 @@ class UserServiceImpl(
     override suspend fun getUsers(command: Commands.GetUsers): Result<List<UserDto>> = runCatching {
         userRepository.getUsers().map { it.toDto() }
     }
+
+    override suspend fun getUserByLogin(command: Commands.GetUserByLogin): Result<UserDto?> = runCatching {
+        userRepository.getUserByLogin(command.login)?.toDto()
+    }
 }

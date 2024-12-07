@@ -15,6 +15,8 @@ fun Application.module() {
     configureHTTP()
     configureSockets()
 
+    configureJwtAuth()
+
     configureRouting()
 
     configureSwagger()
