@@ -6,10 +6,18 @@ import java.util.*
 
 
 class UserRepositoryFakeImpl: UserRepository {
-    private val users = List(20) { User(id = UUID.randomUUID(), login = generateRandomString()) }
+    private val users = List(20) { User(id = UUID.randomUUID(), login = generateRandomString()) }.toMutableList()
 
-    override suspend fun getUsers(): List<User> = users
-    override suspend fun getUserByLogin(login: String): User? = users.find { usr -> usr.login == login }
+    override suspend fun getUsers(): List<User> = users.toList()
+
+    override suspend fun getUserByLogin(login: String): User? = users.find { usr -> usr.login == login }?.copy()
+
+    override suspend fun createUser(login: String): User {
+        val user = User(id = UUID.randomUUID(), login = login)
+        users.add(user)
+
+        return user
+    }
 }
 
 private fun generateRandomString(): String {

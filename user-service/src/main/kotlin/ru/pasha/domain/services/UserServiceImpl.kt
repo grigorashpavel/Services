@@ -16,4 +16,8 @@ class UserServiceImpl(
     override suspend fun getUserByLogin(command: Commands.GetUserByLogin): Result<UserDto?> = runCatching {
         userRepository.getUserByLogin(command.login)?.toDto()
     }
+
+    override suspend fun createUser(command: Commands.CreateUser): Result<UserDto> = runCatching {
+        userRepository.createUser(command.login).toDto()
+    }
 }

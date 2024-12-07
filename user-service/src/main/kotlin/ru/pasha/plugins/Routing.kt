@@ -8,7 +8,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import ru.pasha.domain.services.UserService
-import ru.pasha.routing.Paths
+import ru.pasha.routing.ApiV1
+import ru.pasha.routing.configureApiV1BaseRoute
 import ru.pasha.routing.configureUserRoutes
 
 
@@ -24,14 +25,7 @@ fun Application.configureRouting() {
 
     val userService by inject<UserService>()
     routing {
-        route(Paths.Base) {
-            route("/") {
-                get {
-                    call.respond(HttpStatusCode.OK, hashMapOf("status" to "ok"))
-                }
-
-                configureUserRoutes(userService)
-            }
-        }
+        configureApiV1BaseRoute()
+        configureUserRoutes(userService)
     }
 }

@@ -18,4 +18,8 @@ class UserRepositoryImpl(
     override suspend fun getUserByLogin(login: String): User? = database.query {
         UserDao.find { UserTable.login eq login }.firstOrNull()?.toEntity()
     }
+
+    override suspend fun createUser(login: String): User = database.query {
+        UserDao.new { this.login = login }.toEntity()
+    }
 }

@@ -14,13 +14,14 @@ import ru.pasha.util.JwtExtractor
 import java.time.Instant
 
 
-const val JwtAuthKey = "auth-jwt"
+const val JwtAuthExistUserKey = "auth-jwt-exist"
+const val JwtAuthNotExistUserKey = "auth-jwt-not-exist"
 
 fun Application.configureJwtAuth() {
     val userService by inject<UserService>()
 
     install(Authentication) {
-        jwt(JwtAuthKey) {
+        jwt(JwtAuthExistUserKey) {
             verifier {
                 JWT.require(Algorithm.HMAC256(Config.JWT_SECRET))
                     .withIssuer(Config.JWT_ISS)
@@ -48,6 +49,32 @@ fun Application.configureJwtAuth() {
                     .getOrNull() == null
 
                 if (isUserNotExist) {
+                    return@validate null
+                }
+
+                JWTPrincipal(payload)
+            }
+
+            challenge { _, _ ->
+                call.respond(HttpStatusCode.Unauthorized)
+            }
+        }
+
+        jwt(JwtAuthNotExistUserKey) {
+            verifier {
+                JWT.require(Algorithm.HMAC256(Config.JWT_SECRET))
+                    .withIssuer(Config.JWT_ISS)
+                    .build()
+            }
+
+            validate { credential ->
+                val payload = credential.payload
+
+                val expiresAt = payload.expiresAt?.toInstant()
+                val currentInstant = Instant.now()
+
+                val isExpired = expiresAt?.isBefore(currentInstant) == true
+                if (isExpired) {
                     return@validate null
                 }
 
