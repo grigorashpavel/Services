@@ -26,9 +26,21 @@ fun Route.configureUserRoutes(userService: UserService) {
 
 private fun Route.getUsersRoute(userService: UserService) {
     authenticate(JwtAuthExistUserKey) {
-        get<ApiV1.Users> {
-            val command = Commands.GetUsers
-            userService.getUsers(command)
+        get<ApiV1.Users> { params ->
+            val page = params.page ?: 1
+            val size = params.pageSize ?: 25
+
+            if (page <= 0 || size < 0) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    hashMapOf("error" to "Params must be greater than zero.")
+                )
+
+                return@get
+            }
+
+            val command = Commands.GetUsersPaging(page, size)
+            userService.getUsersPaging(command)
                 .onFailure { e -> call.respond(HttpStatusCode.InternalServerError, e.message.toString()) }
                 .onSuccess { users -> call.respond(users) }
         }

@@ -15,6 +15,14 @@ class UserRepositoryImpl(
         UserDao.all().toList().map { dao -> dao.toEntity() }
     }
 
+    override suspend fun getUsers(offset: Long, size: Int): List<User> = database.query {
+        println("Size(limit)=$size, Offset(offset)=$offset")
+        UserDao.all()
+            .limit(size)
+            .offset(offset)
+            .map { it.toEntity() }
+    }
+
     override suspend fun getUserByLogin(login: String): User? = database.query {
         UserDao.find { UserTable.login eq login }.firstOrNull()?.toEntity()
     }

@@ -8,4 +8,5 @@ interface UserService {
     suspend fun getUsers(command: Commands.GetUsers): Result<List<UserDto>>
     suspend fun getUserByLogin(commands: Commands.GetUserByLogin): Result<UserDto?>
     suspend fun createUser(command: Commands.CreateUser): Result<UserDto>
+    suspend fun getUsersPaging(command: Commands.GetUsersPaging): Result<List<UserDto>>
 }

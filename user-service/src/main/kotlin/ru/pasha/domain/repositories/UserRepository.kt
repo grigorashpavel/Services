@@ -5,6 +5,7 @@ import ru.pasha.domain.entities.User
 
 interface UserRepository {
     suspend fun getUsers(): List<User>
+    suspend fun getUsers(offset: Long, size: Int): List<User>
     suspend fun getUserByLogin(login: String): User?
     suspend fun createUser(login: String): User
 }
