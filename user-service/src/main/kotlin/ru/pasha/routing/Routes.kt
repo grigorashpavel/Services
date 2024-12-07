@@ -15,7 +15,7 @@ import ru.pasha.util.JwtExtractor
 
 fun Route.configureApiV1BaseRoute() {
     get<ApiV1> {
-        call.respond(HttpStatusCode.OK, hashMapOf("status" to "ok"))
+        call.respond(HttpStatusCode.OK, hashMapOf("status" to HttpStatusCode.OK.description))
     }
 }
 

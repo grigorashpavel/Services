@@ -29,7 +29,6 @@ class UserServiceImpl(
     }
 
     override suspend fun getUsersPaging(command: Commands.GetUsersPaging): Result<List<UserDto>> = runCatching {
-        println(command)
         val offset: Long = (command.page - 1).toLong() * command.size
 
         userRepository.getUsers(offset, command.size).map { it.toDto() }

@@ -17,7 +17,6 @@ class UserRepositoryImpl(
     }
 
     override suspend fun getUsers(offset: Long, size: Int): List<User> = database.query {
-        println("Size(limit)=$size, Offset(offset)=$offset")
         UserDao.all()
             .limit(size)
             .offset(offset)

@@ -18,7 +18,6 @@ abstract class ConfigGeneratingTask : DefaultTask() {
             outputDir.parentFile.mkdirs()
         }
 
-        println(System.getenv())
         project.providers.environmentVariable("DB_USERNAME").orElse("").get()
 
         outputDir.writeText("""

@@ -9,6 +9,7 @@ class UserRepositoryFakeImpl: UserRepository {
     private val users = List(20) { User(id = UUID.randomUUID(), login = generateRandomString()) }.toMutableList()
 
     override suspend fun getUsers(): List<User> = users.toList()
+
     override suspend fun getUsers(offset: Long, size: Int): List<User> {
         val ofs = offset.toInt()
         if (ofs > users.lastIndex) {
@@ -21,6 +22,7 @@ class UserRepositoryFakeImpl: UserRepository {
     }
 
     override suspend fun getUserByLogin(login: String): User? = users.find { usr -> usr.login == login }?.copy()
+
     override suspend fun getUserById(id: UUID): User? = users.find { it.id == id }
 
     override suspend fun createUser(login: String): User {
