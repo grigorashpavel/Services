@@ -13,13 +13,10 @@ fun Application.module() {
     configureSerialization()
 
     configureHTTP()
-    configureSockets()
 
     configureJwtAuth()
 
     configureRouting()
-
-    configureSwagger()
 
     configureMonitoring()
 }
