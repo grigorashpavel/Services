@@ -7,8 +7,41 @@ plugins {
 group = "ru.pasha"
 version = "0.0.1"
 
+abstract class ConfigGeneratingTask : DefaultTask() {
+    @OutputFile
+    val outputDir: File = project.file("${project.buildDir}/generated/source/config/Config.kt")
+
+    @TaskAction
+    fun generate() {
+        val isExist = outputDir.parentFile.exists()
+        if (!isExist) {
+            outputDir.parentFile.mkdirs()
+        }
+
+        println(System.getenv())
+        project.providers.environmentVariable("DB_USERNAME").orElse("").get()
+
+        outputDir.writeText("""
+               object Config {
+                   const val DB_USERNAME = "${project.providers.environmentVariable("DB_USERNAME").orElse("").get()}"
+                   const val DB_PASSWORD = "${project.providers.environmentVariable("DB_PASSWORD").orElse("").get()}"
+                   const val DB_URL = "${project.providers.environmentVariable("DB_URL").orElse("").get()}"
+                   
+                   const val JWT_SECRET = "${project.providers.environmentVariable("JWT_SECRET").orElse("").get()}"
+                   const val JWT_ISS = "${project.providers.environmentVariable("JWT_ISS").orElse("").get()}"
+               }
+           """.trimIndent())
+    }
+}
+
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+
+    tasks.register(name = "generateConfig", type = ConfigGeneratingTask::class)
+    tasks.named("compileKotlin") {
+        dependsOn("generateConfig")
+    }
+    sourceSets["main"].java.srcDir("$buildDir/generated/source/config")
 }
 
 repositories {
@@ -25,6 +58,7 @@ dependencies {
     implementation(libs.postgresql)
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.dao)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.server.openapi)
