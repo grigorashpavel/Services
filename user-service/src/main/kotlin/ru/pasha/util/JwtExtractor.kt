@@ -18,9 +18,25 @@ object JwtExtractor {
     fun extractPayload(token: String?): Payload? {
         if (token == null) return null
 
-        val (header, payloadEncode, signature) = token.split('.')
-        return parser.parsePayload(Base64.decode(payloadEncode).decodeToString())
+        try {
+            val (_, payloadEncode, _) = token.split('.')
+            return parser.parsePayload(
+                Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL)
+                    .decode(payloadEncode).decodeToString()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 
     fun extractLogin(payload: Payload) = payload.getClaim("login")?.asString()
+
+    fun extractLoginFromRequest(request: ApplicationRequest): String? {
+        val token = extractToken(request)
+        val payload = extractPayload(token)
+
+        return payload?.let(::extractLogin)
+    }
+
 }
