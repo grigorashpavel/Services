@@ -1,4 +1,4 @@
-package ru.pasha.domain.services
+package ru.pasha.services
 
 import ru.pasha.data.mappers.toDto
 import ru.pasha.domain.commands.Commands

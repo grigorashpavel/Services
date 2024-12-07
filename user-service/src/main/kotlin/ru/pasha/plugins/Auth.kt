@@ -9,7 +9,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import org.koin.ktor.ext.inject
 import ru.pasha.domain.commands.Commands
-import ru.pasha.domain.services.UserService
+import ru.pasha.services.UserService
 import ru.pasha.util.JwtExtractor
 import java.time.Instant
 

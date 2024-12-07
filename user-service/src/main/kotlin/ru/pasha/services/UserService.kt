@@ -1,4 +1,4 @@
-package ru.pasha.domain.services
+package ru.pasha.services
 
 import ru.pasha.domain.commands.Commands
 import ru.pasha.routing.dto.UserDto

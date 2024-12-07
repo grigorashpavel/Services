@@ -7,7 +7,7 @@ import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import ru.pasha.domain.commands.Commands
-import ru.pasha.domain.services.UserService
+import ru.pasha.services.UserService
 import ru.pasha.plugins.JwtAuthExistUserKey
 import ru.pasha.plugins.JwtAuthNotExistUserKey
 import ru.pasha.util.JwtExtractor
