@@ -13,12 +13,14 @@ import ru.pasha.routing.configureUserRoutes
 
 
 fun Application.configureRouting() {
+
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            call.respondText(text = "500: $cause" , status = HttpStatusCode.InternalServerError)
+            call.respondText(text = cause.message.orEmpty() , status = HttpStatusCode.InternalServerError)
         }
     }
     install(Resources)
+    install(IgnoreTrailingSlash)
 
     val userService by inject<UserService>()
     routing {
