@@ -11,5 +11,8 @@ class ApiV1 {
         val parent: ApiV1,
         val page: Int? = null,
         @SerialName("page_size") val pageSize: Int? = null,
-    )
+    ) {
+        @Resource("{${Paths.Id}}")
+        class Id(val parent: Users, val id: String)
+    }
 }

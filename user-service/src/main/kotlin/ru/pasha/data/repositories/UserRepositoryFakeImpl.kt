@@ -21,6 +21,7 @@ class UserRepositoryFakeImpl: UserRepository {
     }
 
     override suspend fun getUserByLogin(login: String): User? = users.find { usr -> usr.login == login }?.copy()
+    override suspend fun getUserById(id: UUID): User? = users.find { it.id == id }
 
     override suspend fun createUser(login: String): User {
         val user = User(id = UUID.randomUUID(), login = login)

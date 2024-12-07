@@ -4,6 +4,7 @@ import ru.pasha.data.mappers.toDto
 import ru.pasha.domain.commands.Commands
 import ru.pasha.domain.repositories.UserRepository
 import ru.pasha.routing.dto.UserDto
+import java.util.UUID
 
 
 class UserServiceImpl(
@@ -15,6 +16,12 @@ class UserServiceImpl(
 
     override suspend fun getUserByLogin(command: Commands.GetUserByLogin): Result<UserDto?> = runCatching {
         userRepository.getUserByLogin(command.login)?.toDto()
+    }
+
+    override suspend fun getUserById(command: Commands.GetUserById): Result<UserDto?> = runCatching {
+        val uuid = UUID.fromString(command.id)
+
+        userRepository.getUserById(uuid)?.toDto()
     }
 
     override suspend fun createUser(command: Commands.CreateUser): Result<UserDto> = runCatching {

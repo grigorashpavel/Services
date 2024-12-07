@@ -22,7 +22,7 @@ fun Application.configureRouting() {
             when (cause) {
                 is BadRequestException -> call.respond(
                     HttpStatusCode.BadRequest,
-                    hashMapOf("error" to "Bad request")
+                    hashMapOf("error" to HttpStatusCode.BadRequest.description)
                 )
                 else -> call.respondText(text = cause.message.orEmpty(), status = HttpStatusCode.InternalServerError)
             }

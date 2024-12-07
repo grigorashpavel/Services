@@ -5,7 +5,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.resources.get
 import io.ktor.server.resources.post
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
+import io.ktor.server.routing.*
 import ru.pasha.domain.commands.Commands
 import ru.pasha.domain.services.UserService
 import ru.pasha.plugins.JwtAuthExistUserKey
@@ -22,6 +22,7 @@ fun Route.configureApiV1BaseRoute() {
 fun Route.configureUserRoutes(userService: UserService) {
     getUsersRoute(userService)
     createUserRoute(userService)
+    getUserById(userService)
 }
 
 private fun Route.getUsersRoute(userService: UserService) {
@@ -84,6 +85,42 @@ fun Route.createUserRoute(userService: UserService) {
                         hashMapOf("id" to usr.id)
                     )
                 }
+        }
+    }
+}
+
+private fun Route.getUserById(userService: UserService) {
+    authenticate(JwtAuthExistUserKey) {
+        get<ApiV1.Users.Id> { params ->
+            try {
+                val command = Commands.GetUserById(params.id)
+                userService.getUserById(command)
+                    .onFailure { e ->
+                        when(e) {
+                            is IllegalArgumentException -> call.respond(
+                                HttpStatusCode.BadRequest,
+                                HttpStatusCode.BadRequest.description
+                            )
+                            else -> call.respond(HttpStatusCode.InternalServerError, e.message.orEmpty())
+                        }
+                    }
+                    .onSuccess { usr ->
+                        if (usr == null) {
+                            call.respond(HttpStatusCode.NotFound)
+                            return@get
+                        }
+
+                        call.respond(
+                            HttpStatusCode.OK,
+                            hashMapOf("user" to usr)
+                        )
+                    }
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    hashMapOf("error" to HttpStatusCode.BadRequest.description)
+                )
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import ru.pasha.database.entities.UserDao
 import ru.pasha.database.entities.UserTable
 import ru.pasha.domain.entities.User
 import ru.pasha.domain.repositories.UserRepository
+import java.util.*
 
 
 class UserRepositoryImpl(
@@ -25,6 +26,10 @@ class UserRepositoryImpl(
 
     override suspend fun getUserByLogin(login: String): User? = database.query {
         UserDao.find { UserTable.login eq login }.firstOrNull()?.toEntity()
+    }
+
+    override suspend fun getUserById(id: UUID): User? = database.query {
+        UserDao.findById(id)?.toEntity()
     }
 
     override suspend fun createUser(login: String): User = database.query {
